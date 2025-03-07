@@ -16,10 +16,22 @@
   </head>
   <body class="bg-white text-gray-800">
     <main class="text-center py-12">
-      <h2 class="text-4xl font-bold text-indigo-400 mb-4">
-        Kompresi Data Text LZW Methodd
+      <img
+        src="/static/text_img.png"
+        style="
+          height: 45%;
+          width: 45%;
+          display: inline-block;
+          align-items: center;
+        "
+        alt=""
+      />
+      <h2
+        class="text-4xl font-bold text-indigo-400 mb-4"
+        style="margin-top: -30px; margin-bottom: 40px"
+      >
+        Kompresi Data Text LZW Method
       </h2>
-
       <form class="mb-4">
         <input
           type="radio"
@@ -27,9 +39,16 @@
           name="compressionType"
           value="encode"
           checked
+          onchange="switchMode()"
         />
         <label for="encode">Encode</label>
-        <input type="radio" id="decode" name="compressionType" value="decode" />
+        <input
+          type="radio"
+          id="decode"
+          name="compressionType"
+          value="decode"
+          onchange="switchMode()"
+        />
         <label for="decode">Decode</label>
       </form>
 
@@ -50,13 +69,6 @@
           ></textarea>
         </div>
       </div>
-
-      <button
-        onclick="downloadText()"
-        class="bg-green-500 text-white px-6 py-2 rounded-lg text-lg mt-4"
-      >
-        Download
-      </button>
     </main>
 
     <script>
@@ -65,6 +77,11 @@
         const mode = document.querySelector(
           'input[name="compressionType"]:checked'
         ).value;
+
+        if (!textInput.trim()) {
+          document.getElementById("output").value = "";
+          return;
+        }
 
         const response = await fetch("/process", {
           method: "POST",
@@ -78,14 +95,18 @@
         document.getElementById("output").value = result.output;
       }
 
-      function downloadText() {
-        const text = document.getElementById("output").value;
-        const blob = new Blob([text], { type: "text/plain" });
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = "compressed_text.txt";
-        link.click();
+      function switchMode() {
+        const inputText = document.getElementById("textInput").value;
+        const outputText = document.getElementById("output").value;
+
+        // Tukar isi input dan output
+        document.getElementById("textInput").value = outputText;
+        document.getElementById("output").value = inputText;
+
+        // Proses ulang teks
+        processText();
       }
+
       document
         .getElementById("textInput")
         .addEventListener("input", processText);
