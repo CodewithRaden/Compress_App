@@ -4,18 +4,27 @@ def lzw_compress(data):
     compressed = []
     current = ""
 
+    print(f"{'Step':<6} {'String':<10} {'Code':<5} {'New Entry':<12} {'New Code':<5}")
+    print("-" * 50)
+
+    step = 1
     for char in data:
         new_str = current + char
         if new_str in dictionary:
             current = new_str
         else:
             compressed.append(dictionary[current])
+            print(
+                f"{step:<6} {current:<10} {dictionary[current]:<5} {new_str:<12} {next_code:<5}"
+            )
             dictionary[new_str] = next_code
             next_code += 1
             current = char
+        step += 1
 
     if current:
         compressed.append(dictionary[current])
+        print(f"{step:<6} {current:<10} {dictionary[current]:<5} {'-':<12} {'-':<5}")
 
     return compressed
 
